@@ -1,0 +1,46 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+        aws-region: ${{ vars.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Push docker image to Amazon ECR
+      run: |
+        docker build -t ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}:latest .
+        docker push ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}:latest
+
+    - name: Wait until ECR latest is ready
+      run: |
+        for i in {1..30}; do
+          aws ecr describe-images \
+            --repository-name "${{ vars.AWS_ECR_REPOSITORY }}" \
+            --image-ids imageTag=latest >/dev/null 2>&1 && break
+          sleep 2
+        done
+
+    - name: Update Lambda container image
+      run: |
+        aws lambda update-function-code \
+          --function-name ${{ vars.AWS_LAMBDA_FUNCTION_NAME }} \
+          --image-uri ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}:latest
