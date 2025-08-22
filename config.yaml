@@ -1,5 +1,4 @@
 # 공통 설정 파일
-base_image: "public.ecr.aws/lambda/python:3.13"
 python_version: "3.13"
 chrome_version: "stable"  # 자동 감지
 chrome_bin: "/opt/chrome/chrome"

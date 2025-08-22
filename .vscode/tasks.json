@@ -1,0 +1,22 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Dev Container 설정 생성",
+            "type": "shell",
+            "command": "python",
+            "args": ["scripts/generate-devcontainer.py"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [],
+            "detail": "config.yaml의 설정을 devcontainer.json에 적용합니다."
+        }
+    ]
+}

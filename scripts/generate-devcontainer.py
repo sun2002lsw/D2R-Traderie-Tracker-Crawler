@@ -20,8 +20,11 @@ def load_template():
 
 def generate_devcontainer(config, template):
     """템플릿에 설정을 적용하여 devcontainer.json을 생성합니다."""
+    # 로컬 개발용 Python 이미지 사용 (안정적)
+    python_image = f"python:{config['python_version']}-slim"
+    
     # 템플릿 변수 치환
-    devcontainer = template.replace('{{BASE_IMAGE}}', config['base_image'])
+    devcontainer = template.replace('{{BASE_IMAGE}}', python_image)
     devcontainer = devcontainer.replace('{{CHROME_VERSION}}', config['chrome_version'])
     devcontainer = devcontainer.replace('{{CHROME_BIN}}', config['chrome_bin'])
     devcontainer = devcontainer.replace('{{CHROMEDRIVER_PATH}}', config['chromedriver_path'])
@@ -43,7 +46,7 @@ def main():
             f.write(devcontainer_content)
         
         print("✅ Dev Container 설정 생성 완료!")
-        print(f"   - 베이스 이미지: {config['base_image']}")
+        print(f"   - 베이스 이미지: python:{config['python_version']}-slim (로컬 개발용)")
         print(f"   - Python 버전: {config['python_version']}")
         print(f"   - Chrome 버전: {config['chrome_version']}")
         print("   - .devcontainer/devcontainer.json 생성됨")

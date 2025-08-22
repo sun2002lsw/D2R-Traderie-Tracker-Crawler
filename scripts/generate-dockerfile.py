@@ -22,8 +22,11 @@ def generate_dockerfile(config, template):
     # 시스템 패키지들을 공백으로 구분된 문자열로 변환
     system_packages = ' '.join(config['system_packages'])
     
+    # AWS Lambda Python 3.13 이미지 사용 (배포용)
+    lambda_image = f"public.ecr.aws/lambda/python:{config['python_version']}"
+    
     # 템플릿 변수 치환
-    dockerfile = template.replace('{{BASE_IMAGE}}', config['base_image'])
+    dockerfile = template.replace('{{BASE_IMAGE}}', lambda_image)
     dockerfile = dockerfile.replace('{{CHROME_BIN}}', config['chrome_bin'])
     dockerfile = dockerfile.replace('{{CHROMEDRIVER_PATH}}', config['chromedriver_path'])
     dockerfile = dockerfile.replace('{{CHROME_VERSION}}', config['chrome_version'])
@@ -39,6 +42,9 @@ def main():
         config = load_config()
         template = load_template()
         
+        # AWS Lambda Python 3.13 이미지 사용 (배포용)
+        lambda_image = f"public.ecr.aws/lambda/python:{config['python_version']}"
+        
         # Dockerfile 생성
         dockerfile_content = generate_dockerfile(config, template)
         
@@ -47,7 +53,7 @@ def main():
             f.write(dockerfile_content)
         
         print("✅ Dockerfile 생성 완료!")
-        print(f"   - 베이스 이미지: {config['base_image']}")
+        print(f"   - 베이스 이미지: {lambda_image}")
         print(f"   - Python 버전: {config['python_version']}")
         print(f"   - Chrome 버전: {config['chrome_version']}")
         
