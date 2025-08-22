@@ -1,4 +1,4 @@
-FROM python:3.13-slim
+FROM public.ecr.aws/lambda/python:3.13
 
 ENV PIP_NO_CACHE_DIR=1 \
     LANG=C.UTF-8 \
@@ -59,12 +59,12 @@ RUN set -eux; \
 # 바이너리 버전 확인 (설치 검증용)
 RUN /opt/chrome/chrome --version && /opt/chromedriver/chromedriver --version
 
-# Python deps 설치
+# Python deps는 Lambda 작업 디렉토리에 설치
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 
 # 소스 배치
-COPY app.py .
+COPY app.py ${LAMBDA_TASK_ROOT}
 
 # Lambda 핸들러
 CMD ["app.handler"]
