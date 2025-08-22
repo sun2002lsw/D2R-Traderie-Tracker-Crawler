@@ -36,6 +36,30 @@ python scripts/generate-dockerfile.py
 2. 프로젝트 폴더를 Dev Container로 열기
 3. `config.yaml` 수정 후 `generate-devcontainer.py` 실행하여 설정 동기화
 
+#### Dev Container 문제 해결
+Dev Container 설정을 변경한 후 문제가 발생하면 정리 스크립트를 사용하세요:
+
+##### 방법 1: VS Code Task (권장)
+1. **`Ctrl+Shift+P`** → **"Tasks: Run Task"**
+2. **"Dev Container 정리 및 재시작"** 선택
+3. 자동으로 정리 완료 후 새 컨테이너 시작
+
+##### 방법 2: 단축키
+- **`Ctrl+Shift+D`**: Dev Container 정리 및 재시작
+- **`Ctrl+Shift+G`**: Dev Container 설정 생성
+- **`Ctrl+Shift+F`**: Dockerfile 생성
+
+##### 방법 3: 터미널
+```bash
+# Dev Container 완전 정리 및 재시작
+python scripts/clean-devcontainer.py
+```
+
+이 스크립트는:
+- 기존 Dev Container 컨테이너를 완전히 삭제
+- 사용하지 않는 Docker 이미지 정리
+- 새 컨테이너에서 깨끗하게 시작할 수 있도록 도움
+
 ### 로컬 개발
 ```bash
 pip install -r requirements.txt

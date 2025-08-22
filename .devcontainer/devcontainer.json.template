@@ -1,9 +1,11 @@
 {
-  "name": "D2R Traderie Tracker Crawler",
+  "name": "D2R Traderie Tracker Crawler v2",
   "image": "{{BASE_IMAGE}}",
   "features": {
-    "ghcr.io/devcontainers/features/chrome:1": {
-      "version": "{{CHROME_VERSION}}"
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": "false",
+      "username": "root",
+      "upgradePackages": "true"
     }
   },
   "customizations": {
@@ -20,7 +22,7 @@
       }
     }
   },
-  "postCreateCommand": "pip install -r requirements.txt",
+  "onCreateCommand": "pip install -r requirements.txt",
   "forwardPorts": [5000],
   "remoteUser": "root",
   "env": {
