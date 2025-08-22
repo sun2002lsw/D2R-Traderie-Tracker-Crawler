@@ -87,6 +87,26 @@ def build_driver():
         print("Chrome 옵션 설정 완료")
         print(f"Chrome binary location: {opts.binary_location}")
         
+        # ChromeDriver 상세 정보 확인
+        print(f"ChromeDriver 실행 권한 확인:")
+        import stat
+        st = os.stat(chromedriver_path)
+        print(f"  - 파일 권한: {oct(st.st_mode)}")
+        print(f"  - 소유자: {st.st_uid}")
+        print(f"  - 그룹: {st.st_gid}")
+        
+        # ChromeDriver 실행 테스트
+        print("ChromeDriver 실행 테스트:")
+        import subprocess
+        try:
+            result = subprocess.run([chromedriver_path, '--version'], 
+                                  capture_output=True, text=True, timeout=10)
+            print(f"  - 실행 결과: {result.returncode}")
+            print(f"  - 출력: {result.stdout}")
+            print(f"  - 오류: {result.stderr}")
+        except Exception as e:
+            print(f"  - 실행 테스트 실패: {str(e)}")
+        
         driver = webdriver.Chrome(service=service, options=opts)
         print("Chrome 드라이버 생성 성공")
         
