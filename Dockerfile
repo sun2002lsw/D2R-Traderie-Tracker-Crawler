@@ -60,7 +60,16 @@ RUN mkdir -p /tmp/chrome && \
     mkdir -p /tmp/chromedriver && \
     chmod 777 /tmp/chromedriver && \
     mkdir -p /dev/shm && \
-    chmod 777 /dev/shm
+    chmod 777 /dev/shm && \
+    mkdir -p /tmp/.X11-unix && \
+    chmod 777 /tmp/.X11-unix && \
+    mkdir -p /tmp/.org.chromium.Chromium.XXXXXX && \
+    chmod 777 /tmp/.org.chromium.Chromium.XXXXXX
+
+# Chrome sandbox 권한 설정
+RUN chown -R root:root /opt/chrome && \
+    chmod -R 755 /opt/chrome && \
+    chmod 4755 /opt/chrome/chrome-sandbox
 
 # 바이너리 버전 확인 (설치 검증용)
 RUN /opt/chrome/chrome --version && /opt/chromedriver/chromedriver --version
