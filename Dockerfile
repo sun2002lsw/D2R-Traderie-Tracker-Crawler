@@ -54,6 +54,14 @@ RUN set -eux; \
     # 실행 권한
     chmod +x /opt/chrome/chrome /opt/chromedriver/chromedriver
 
+# Lambda 환경에서 Chrome 실행을 위한 추가 설정
+RUN mkdir -p /tmp/chrome && \
+    chmod 777 /tmp/chrome && \
+    mkdir -p /tmp/chromedriver && \
+    chmod 777 /tmp/chromedriver && \
+    mkdir -p /dev/shm && \
+    chmod 777 /dev/shm
+
 # 바이너리 버전 확인 (설치 검증용)
 RUN /opt/chrome/chrome --version && /opt/chromedriver/chromedriver --version
 
