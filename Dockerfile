@@ -30,9 +30,7 @@ RUN dnf -y update && \
         dejavu-sans-fonts \
         liberation-fonts \
         fontconfig \
-        wget \
-        curl \
-        gnupg2 && \
+        wget && \
     dnf clean all && rm -rf /var/cache/dnf
 
 # Chrome for Testing (stable) + chromedriver (stable) 다운로드/설치
