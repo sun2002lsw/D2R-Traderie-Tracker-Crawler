@@ -6,8 +6,8 @@ ENV PIP_NO_CACHE_DIR=1 \
     CHROMEDRIVER=/opt/chromedriver/chromedriver
 
 # 필요한 런타임 라이브러리 + 유틸 + 폰트
-RUN apt-get update && \
-    apt-get install -y \
+RUN dnf -y update && \
+    dnf -y install \
         unzip \
         ca-certificates \
         nss \
@@ -15,25 +15,25 @@ RUN apt-get update && \
         at-spi2-core \
         gtk3 \
         pango \
-        libxcomposite1 \
-        libxrandr2 \
-        libxcursor1 \
-        libxdamage1 \
-        libxfixes3 \
-        libxrender1 \
-        libxi6 \
-        libxss1 \
-        libasound2 \
-        libcups2 \
-        libdrm2 \
-        libgbm1 \
-        fonts-dejavu-core \
-        fonts-liberation \
+        libXcomposite \
+        libXrandr \
+        libXcursor \
+        libXdamage \
+        libXfixes \
+        libXrender \
+        libXi \
+        libXScrnSaver \
+        alsa-lib \
+        cups-libs \
+        libdrm \
+        mesa-libgbm \
+        dejavu-sans-fonts \
+        liberation-fonts \
         fontconfig \
         wget \
         curl \
         gnupg2 && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    dnf clean all && rm -rf /var/cache/dnf
 
 # Chrome for Testing (stable) + chromedriver (stable) 다운로드/설치
 RUN set -eux; \
@@ -59,12 +59,12 @@ RUN set -eux; \
 # 바이너리 버전 확인 (설치 검증용)
 RUN /opt/chrome/chrome --version && /opt/chromedriver/chromedriver --version
 
-# Python deps 설치
+# Python deps는 Lambda 작업 디렉토리에 설치
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 
 # 소스 배치
-COPY app.py .
+COPY app.py ${LAMBDA_TASK_ROOT}
 
-# 실행 명령
-CMD ["python", "app.py"]
+# Lambda 핸들러
+CMD ["app.handler"]
