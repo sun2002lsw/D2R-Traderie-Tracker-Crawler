@@ -80,7 +80,7 @@ def build_driver():
     # 추가 환경 변수 설정
     env = os.environ.copy()
     env['DISPLAY'] = ':99'
-    env['CHROME_DEVEL_SANDBOX'] = '/opt/chrome/chrome-sandbox'
+    env['CHROME_DEVEL_SANDBOX'] = '/opt/chrome/chrome_sandbox'
     
     try:
         # Chrome 프로세스 시작 전 디버깅 정보

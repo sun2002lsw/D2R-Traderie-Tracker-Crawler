@@ -69,7 +69,7 @@ RUN mkdir -p /tmp/chrome && \
 # Chrome sandbox 권한 설정
 RUN chown -R root:root /opt/chrome && \
     chmod -R 755 /opt/chrome && \
-    chmod 4755 /opt/chrome/chrome-sandbox
+    chmod 4755 /opt/chrome/chrome_sandbox
 
 # 바이너리 버전 확인 (설치 검증용)
 RUN /opt/chrome/chrome --version && /opt/chromedriver/chromedriver --version
