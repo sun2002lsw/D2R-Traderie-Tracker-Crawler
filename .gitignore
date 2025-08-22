@@ -111,8 +111,3 @@ dmypy.json
 # OS
 .DS_Store
 Thumbs.db
-
-# Project specific
-# 자동 생성되는 파일들 (템플릿에서 생성)
-Dockerfile
-.devcontainer/devcontainer.json

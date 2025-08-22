@@ -111,3 +111,9 @@ def handler(event, context):
                 print("Chrome 드라이버 정리 완료")
             except Exception as e:
                 print(f"드라이버 정리 중 에러: {str(e)}")
+
+
+if __name__ == "__main__":
+    result = handler({}, None)
+    print(f"Status Code: {result['statusCode']}")
+    print(f"Body: {result['body']}")

@@ -1,0 +1,42 @@
+{
+  "name": "D2R Traderie Tracker Crawler v2",
+  "image": "python:3.13-slim",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": "false",
+      "username": "root",
+      "upgradePackages": "true"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.debugpy",
+        "ms-vscode.vscode-json"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true
+      }
+    }
+  },
+  "onCreateCommand": [
+    "apt-get update && apt-get install -y unzip wget curl gnupg2",
+    "wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -",
+    "echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google-chrome.list",
+    "apt-get update && apt-get install -y google-chrome-stable",
+    "CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | awk -F'.' '{print $1}')",
+    "wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION/chromedriver_linux64.zip",
+    "unzip /tmp/chromedriver.zip -d /opt/",
+    "chmod +x /opt/chromedriver",
+    "pip install -r requirements.txt"
+  ],
+  "forwardPorts": [5000],
+  "remoteUser": "root",
+  "env": {
+    "CHROME_BIN": "/usr/bin/google-chrome",
+    "CHROMEDRIVER": "/opt/chromedriver"
+  }
+}
