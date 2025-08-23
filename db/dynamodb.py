@@ -12,5 +12,5 @@ class DynamoDB:
     
     def put_items(self, items: Dict[str, Any]):
         with self.table.batch_writer() as batch:
-            for item in items:
+            for item in items.values():
                 batch.put_item(Item=item)
