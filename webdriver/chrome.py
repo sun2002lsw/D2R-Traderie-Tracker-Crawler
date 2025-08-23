@@ -62,8 +62,8 @@ class ChromeDriver:
         opts.add_argument("--disable-translate")  # 번역 비활성화
         
         # Lambda 환경 변수 확인
-        chrome_bin = os.environ.get("CHROME_BIN", "/opt/chrome/chrome")
-        chromedriver_path = os.environ.get("CHROMEDRIVER", "/opt/chromedriver/chromedriver")
+        chrome_bin = os.environ.get("CHROME_BIN")
+        chromedriver_path = os.environ.get("CHROMEDRIVER")
         if os.path.exists(chrome_bin):
             opts.binary_location = chrome_bin
         
