@@ -82,6 +82,7 @@ RUN pip install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 COPY app.py ${LAMBDA_TASK_ROOT}
 COPY webdriver/ ${LAMBDA_TASK_ROOT}/webdriver/
 COPY crawler/ ${LAMBDA_TASK_ROOT}/crawler/
+COPY db/ ${LAMBDA_TASK_ROOT}/db/
 
 # Lambda 핸들러
 CMD ["app.handler"]
