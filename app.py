@@ -1,3 +1,4 @@
+from time import sleep
 from webdriver import ChromeDriver
 from crawler import Crawler
 from db import DynamoDB
@@ -14,10 +15,21 @@ def handler(event, context):
             db.test_connection()
             print("DynamoDB 연결 테스트 완료")
         
-        print("Chrome 드라이버 생성 시작...")
+        print("웹 드라이버 생성 시작...")
         chrome_driver = ChromeDriver()
         driver = chrome_driver.get_driver()
-        print("Chrome 드라이버 생성 완료")
+        print("웹 드라이버 생성 완료")
+
+        print("웹 드라이버 접속 검증 시작...")
+        driver.get("https://traderie.com/diablo2resurrected")
+        sleep(10)
+        if "error" in driver.current_url:
+            print("웹 드라이버 접속 검증 실패")
+            return {
+                "statusCode": 500,
+                "body": "fail"
+            }
+        print("웹 드라이버 접속 검증 완료")
         
         print("크롤러 생성 및 실행 시작...")
         crawler = Crawler(driver)
