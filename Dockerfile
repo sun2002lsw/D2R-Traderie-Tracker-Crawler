@@ -78,8 +78,10 @@ RUN /opt/chrome/chrome --version && /opt/chromedriver/chromedriver --version
 COPY requirements.txt .
 RUN pip install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 
-# 소스 배치
+# 소스 코드 복사 (모든 모듈 포함)
 COPY app.py ${LAMBDA_TASK_ROOT}
+COPY webdriver/ ${LAMBDA_TASK_ROOT}/webdriver/
+COPY crawler/ ${LAMBDA_TASK_ROOT}/crawler/
 
 # Lambda 핸들러
 CMD ["app.handler"]
