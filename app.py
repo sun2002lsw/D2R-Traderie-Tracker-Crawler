@@ -1,4 +1,6 @@
-from time import sleep
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from webdriver import ChromeDriver
 from crawler import Crawler
 from db import DynamoDB
@@ -8,6 +10,7 @@ import os
 
 def handler(event, context):
     driver = None
+
     try:
         if not os.getenv('LOCAL_DEV'):
             print("DynamoDB 연결 테스트 시작...")
@@ -22,16 +25,14 @@ def handler(event, context):
 
         print("웹 드라이버 접속 검증 시작...")
         driver.get("https://traderie.com/diablo2resurrected")
-        sleep(10)
-        if "error" in driver.current_url:
-            print("웹 드라이버 접속 검증 실패")
-            return {
-                "statusCode": 500,
-                "body": "fail"
-            }
+        row_div = WebDriverWait(driver, 30).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "div.row"))
+        )
+        if len(row_div.find_elements("xpath", "./*")) < 4:
+            raise Exception("웹 드라이버 접속 검증 실패")
         print("웹 드라이버 접속 검증 완료")
         
-        print("크롤러 생성 및 실행 시작...")
+        print("크롤링 시작...")
         crawler = Crawler(driver)
         result = crawler.run()
         print("크롤링 완료")
