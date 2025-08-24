@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 class Crawler:
     def __init__(self, driver):
         self.driver = driver
-    
+
     def run(self):
         traderie_id = os.environ.get('TRADERIE_ID')
         traderie_pwd = os.environ.get('TRADERIE_PWD')
@@ -37,10 +37,10 @@ class Crawler:
     def _login(self, traderie_id, traderie_pwd):
         self.driver.get("https://traderie.com/login")
         
-        username_input = WebDriverWait(self.driver, 10).until(
+        username_input = WebDriverWait(self.driver, 30).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="username"]'))
         )
-        password_input = WebDriverWait(self.driver, 10).until(
+        password_input = WebDriverWait(self.driver, 30).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="password"]'))
         )
         print("로그인 페이지 로딩 완료")

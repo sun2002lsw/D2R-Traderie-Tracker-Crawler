@@ -1,11 +1,8 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from webdriver import ChromeDriver
-from crawler import Crawler
+import os
+import webdriver
+import traderie
 from db import DynamoDB
 from datetime import datetime
-import os
 
 
 def handler(event, context):
@@ -19,21 +16,17 @@ def handler(event, context):
             print("DynamoDB 연결 테스트 완료")
         
         print("웹 드라이버 생성 시작...")
-        chrome_driver = ChromeDriver()
+        chrome_driver = webdriver.StealthDriver()
         driver = chrome_driver.get_driver()
         print("웹 드라이버 생성 완료")
 
-        print("웹 드라이버 접속 검증 시작...")
-        driver.get("https://traderie.com/diablo2resurrected")
-        row_div = WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "div.row"))
-        )
-        if len(row_div.find_elements("xpath", "./*")) < 4:
-            raise Exception("웹 드라이버 접속 검증 실패")
-        print("웹 드라이버 접속 검증 완료")
-        
+        print("드라이버 유효성 검사 시작...")
+        validator = traderie.Validator(driver)
+        validator.test_connection()
+        print("드라이버 유효성 검사 완료")
+
         print("크롤링 시작...")
-        crawler = Crawler(driver)
+        crawler = traderie.Crawler(driver)
         result = crawler.run()
         print("크롤링 완료")
         
