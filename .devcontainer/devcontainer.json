@@ -28,10 +28,11 @@
   "remoteUser": "root",
   "containerEnv": {
     "CHROME_BIN": "/opt/chrome/chrome",
-    "CHROMEDRIVER": "/opt/chromedriver/chromedriver",
-    "LOCAL_DEV": "true"
+    "CHROMEDRIVER": "/opt/chromedriver/chromedriver"
   },
   "remoteEnv": {
+    "AWS_ACCESS_KEY_ID": "${localEnv:AWS_ACCESS_KEY_ID}",
+    "AWS_SECRET_ACCESS_KEY": "${localEnv:AWS_SECRET_ACCESS_KEY}",
     "TRADERIE_ID": "${localEnv:TRADERIE_ID}",
     "TRADERIE_PWD": "${localEnv:TRADERIE_PWD}"
   }

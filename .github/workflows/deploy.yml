@@ -27,7 +27,12 @@ jobs:
 
     - name: Push docker image to Amazon ECR
       run: |
-        docker build -t ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}:latest .
+        docker build \
+          --build-arg AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+          --build-arg AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+          --build-arg TRADERIE_ID=${{ secrets.TRADERIE_ID }} \
+          --build-arg TRADERIE_PWD=${{ secrets.TRADERIE_PWD }} \
+          -t ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}:latest .
         docker push ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}:latest
 
     - name: Wait until ECR latest is ready

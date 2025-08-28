@@ -3,8 +3,4 @@ globs: devcontainer.json,Dockerfile
 alwaysApply: false
 ---
 
-Dockerfile은 AWS Lambda에서 실행되어야 한다는 것을 명심해
-devcontainer.json는 로컬 디버깅 환경을 위한 파일이야
-서로 각자의 배포 환경이 다르다는 것을 명심해
-
 새로운 파일이 추가되면, Dockerfile의 "# 소스 코드 복사 (모든 모듈 포함)"에 반드시 추가해 줘야 돼돼

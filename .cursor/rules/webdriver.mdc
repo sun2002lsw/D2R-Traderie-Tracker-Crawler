@@ -1,6 +1,0 @@
----
-alwaysApply: false
----
-
-webdriver에서는 "LOCAL_DEV" 환경 변수를 사용해서는 안 된다
-개발 환경과 배포 환경이 동일한 드라이버 설정을 사용해야 한다

@@ -1,6 +1,17 @@
 FROM public.ecr.aws/lambda/python:3.13
 
-ENV PIP_NO_CACHE_DIR=1 \
+# Build arguments for secrets
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+ARG TRADERIE_ID
+ARG TRADERIE_PWD
+
+# Set environment variables from build args
+ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+    AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+    TRADERIE_ID=${TRADERIE_ID} \
+    TRADERIE_PWD=${TRADERIE_PWD} \
+    PIP_NO_CACHE_DIR=1 \
     LANG=C.UTF-8 \
     CHROME_BIN=/opt/chrome/chrome \
     CHROMEDRIVER=/opt/chromedriver/chromedriver

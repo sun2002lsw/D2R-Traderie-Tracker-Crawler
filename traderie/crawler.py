@@ -23,7 +23,7 @@ class Crawler:
         item_id = self._get_traderie_item_id(item_name)
         print(f"{item_name} => {item_id}")
         trade_list = self._crawl_trade_list(item_id)
-        print(f"{item_name} 아이템 크롤링 완료\n")
+        print(f"{item_name} 아이템 크롤링 완료")
 
         return trade_list
     
@@ -78,8 +78,13 @@ class Crawler:
         print(f"{len(listings)}개의 거래 확인됨")
 
         # 각각 거래 목록에 대해 파싱
+        trade_list = list()
         for listing in listings:
-            self._refine_trade(listing)
+            trade_info = self._refine_trade(listing)
+            if trade_info:
+                trade_list.append(trade_info)
+
+        return trade_list
     
     def _refine_trade(self, listing):
         lines = listing.text.split("\n")
