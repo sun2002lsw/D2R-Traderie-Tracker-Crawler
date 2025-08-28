@@ -3,11 +3,7 @@ FROM public.ecr.aws/lambda/python:3.13
 ENV PIP_NO_CACHE_DIR=1 \
     LANG=C.UTF-8 \
     CHROME_BIN=/opt/chrome/chrome \
-    CHROMEDRIVER=/opt/chromedriver/chromedriver \
-    WDM_LOG_LEVEL=0 \
-    WDM_PRINT_FIRST_LINE=False \
-    PYTHONPATH=/var/task \
-    AWS_LAMBDA_FUNCTION_NAME=true
+    CHROMEDRIVER=/opt/chromedriver/chromedriver
 
 # 필요한 런타임 라이브러리 + 유틸 + 폰트
 RUN dnf -y update && \
