@@ -16,11 +16,11 @@ def handler(event, context):
         print("===== DB 데이터 조회 시작 =====")
         db = DynamoDB()
         item_infos = db.get_item_infos()
-        db_item_names = set(item["item_name"] for item in item_infos)
+        db_items = set(item["item_name"] for item in item_infos)
 
         with open("traderie/traderie_items.json", "r", encoding="utf-8") as f:
             traderie_items = set(json.load(f))
-        not_in_db_items = [item for item in db_item_names if item not in traderie_items]
+        not_in_db_items = [item for item in traderie_items if item not in db_items]
 
         if not_in_db_items:
             target_item_name = not_in_db_items[0]

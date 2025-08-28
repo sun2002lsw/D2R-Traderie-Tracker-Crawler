@@ -13,7 +13,8 @@ class StealthDriver(BaseDriver):
         self.driver = uc.Chrome(
             options=options, 
             driver_executable_path=driver_path,
-            browser_executable_path=chrome_path
+            browser_executable_path=chrome_path,
+            headless=True
         )
         self.driver.set_page_load_timeout(60)
 

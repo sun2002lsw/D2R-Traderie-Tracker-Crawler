@@ -19,4 +19,6 @@ class ChromeDriver(BaseDriver):
         self.driver.set_page_load_timeout(60)
 
     def _createChromeOptions(self):
-        return Options()
+        options = Options()
+        options.add_argument('--headless')
+        return options
