@@ -3,7 +3,9 @@ import os
 
 
 def test_traderie_items_json_exists():
-    assert os.path.exists("traderie/traderie_items.json"), "traderie_items.json 파일이 존재하지 않습니다"
+    assert os.path.exists(
+        "traderie/traderie_items.json"
+    ), "traderie_items.json 파일이 존재하지 않습니다"
 
 
 def test_traderie_items_json_is_valid_json():
