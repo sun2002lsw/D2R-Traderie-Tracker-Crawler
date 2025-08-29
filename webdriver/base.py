@@ -41,9 +41,7 @@ class BaseDriver:
         chrome_options.add_argument("--disable-prompt-on-repost")
         chrome_options.add_argument("--disable-domain-reliability")
         chrome_options.add_argument("--disable-component-update")
-        chrome_options.add_argument(
-            "--disable-features=InterestBasedContentTargeting"
-        )
+        chrome_options.add_argument("--disable-features=InterestBasedContentTargeting")
 
         # 메모리 및 성능 최적화
         chrome_options.add_argument("--memory-pressure-off")

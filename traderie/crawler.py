@@ -35,14 +35,10 @@ class Crawler:
 
         # 페이지가 로딩 되기를 기다림
         username_input = WebDriverWait(self.web_driver, 30).until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, 'input[name="username"]')
-            )
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="username"]'))
         )
         password_input = WebDriverWait(self.web_driver, 30).until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, 'input[name="password"]')
-            )
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="password"]'))
         )
         print(f"로그인 페이지 로딩 완료")
 
@@ -90,9 +86,7 @@ class Crawler:
 
         # listing-product-info 요소들이 로딩되기를 기다림 (20개 또는 최대 30초)
         def wait_for_listings_loaded(driver):
-            listings = driver.find_elements(
-                By.CSS_SELECTOR, "div.listing-product-info"
-            )
+            listings = driver.find_elements(By.CSS_SELECTOR, "div.listing-product-info")
             return len(listings) >= 20
 
         WebDriverWait(self.web_driver, 30).until(wait_for_listings_loaded)
@@ -118,16 +112,13 @@ class Crawler:
             return  # 24시간 이상 거래 제외
 
         start_index = lines.index("Trading For")
-        end_index = next(
-            i for i, line in enumerate(lines) if "High Rune Value" in line
-        )
+        end_index = next(i for i, line in enumerate(lines) if "High Rune Value" in line)
         trading_for_lines = lines[start_index + 1 : end_index]
 
         if any("each" in line for line in trading_for_lines):
             return  # each 거래는 뭔가 가치 판단이 어려워서 제외
         if any(
-            ("Rune" not in line) and (" OR" not in line)
-            for line in trading_for_lines
+            ("Rune" not in line) and (" OR" not in line) for line in trading_for_lines
         ):
             return  # "Rune"도 아니고 " OR"도 아닌 항목이라면, 아이템이 끼어 있는 것
 

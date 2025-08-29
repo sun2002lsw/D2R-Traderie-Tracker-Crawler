@@ -21,10 +21,7 @@ def main():
         items = db_instance.get_items()
         db_items = set(item["item_name"] for item in items)
 
-        not_in_db_items = [
-            item for item in traderie_items if item not in db_items
-        ]
-
+        not_in_db_items = [item for item in traderie_items if item not in db_items]
         if not_in_db_items:
             target_item_name = not_in_db_items[0]
         else:
