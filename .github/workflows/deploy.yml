@@ -1,51 +1,42 @@
-name: Deploy to AWS
+name: Code Quality Check
 
 on:
   push:
     branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
-  build-and-push:
+  code-quality:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
       with:
-        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-        aws-region: ${{ vars.AWS_REGION }}
+        python-version: '3.13'
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
-
-    - name: Push docker image to Amazon ECR
+    - name: Install dependencies
       run: |
-        docker build \
-          --build-arg AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
-          --build-arg AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
-          --build-arg TRADERIE_ID=${{ secrets.TRADERIE_ID }} \
-          --build-arg TRADERIE_PWD=${{ secrets.TRADERIE_PWD }} \
-          -t ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}:latest .
-        docker push ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}:latest
+        python -m pip install --upgrade pip
+        pip install flake8 black isort
 
-    - name: Wait until ECR latest is ready
+    - name: Lint with flake8
       run: |
-        for i in {1..30}; do
-          aws ecr describe-images \
-            --repository-name "${{ vars.AWS_ECR_REPOSITORY }}" \
-            --image-ids imageTag=latest >/dev/null 2>&1 && break
-          sleep 2
-        done
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
 
-    - name: Update Lambda container image
+    - name: Check code formatting with black
       run: |
-        aws lambda update-function-code \
-          --function-name ${{ vars.AWS_LAMBDA_FUNCTION_NAME }} \
-          --image-uri ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}:latest
+        black --check --diff .
+
+    - name: Check import sorting with isort
+      run: |
+        isort --check-only --diff .
+
+    - name: Run tests
+      run: |
+        python -m pytest tests/ -v

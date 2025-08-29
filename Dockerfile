@@ -1,48 +1,37 @@
-FROM public.ecr.aws/lambda/python:3.13
+FROM python:3.13-slim
 
-# Build arguments for secrets
-ARG AWS_ACCESS_KEY_ID
-ARG AWS_SECRET_ACCESS_KEY
-ARG TRADERIE_ID
-ARG TRADERIE_PWD
-
-# Set environment variables from build args
-ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-    AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
-    TRADERIE_ID=${TRADERIE_ID} \
-    TRADERIE_PWD=${TRADERIE_PWD} \
-    PIP_NO_CACHE_DIR=1 \
+# Set environment variables
+ENV PIP_NO_CACHE_DIR=1 \
     LANG=C.UTF-8 \
     CHROME_BIN=/opt/chrome/chrome \
     CHROMEDRIVER=/opt/chromedriver/chromedriver
 
 # 필요한 런타임 라이브러리 + 유틸 + 폰트
-RUN dnf -y update && \
-    dnf -y install \
+RUN apt-get update && \
+    apt-get install -y \
         unzip \
         ca-certificates \
-        nss \
-        atk \
-        at-spi2-core \
-        gtk3 \
-        pango \
-        libXcomposite \
-        libXrandr \
-        libXcursor \
-        libXdamage \
-        libXfixes \
-        libXrender \
-        libXi \
-        libXScrnSaver \
-        alsa-lib \
-        cups-libs \
-        libdrm \
-        mesa-libgbm \
-        dejavu-sans-fonts \
-        liberation-fonts \
-        fontconfig \
-        wget && \
-    dnf clean all && rm -rf /var/cache/dnf
+        wget \
+        gnupg \
+        fonts-liberation \
+        libasound2 \
+        libatk-bridge2.0-0 \
+        libatk1.0-0 \
+        libatspi2.0-0 \
+        libcups2 \
+        libdbus-1-3 \
+        libdrm2 \
+        libgtk-3-0 \
+        libnspr4 \
+        libnss3 \
+        libxcomposite1 \
+        libxdamage1 \
+        libxrandr2 \
+        libxss1 \
+        libxtst6 \
+        xdg-utils && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Chrome for Testing (stable) + chromedriver (stable) 다운로드/설치
 RUN set -eux; \
@@ -65,7 +54,7 @@ RUN set -eux; \
     # 실행 권한
     chmod +x /opt/chrome/chrome /opt/chromedriver/chromedriver
 
-# Lambda 환경에서 Chrome 실행을 위한 추가 설정
+# Chrome 실행을 위한 디렉토리 설정
 RUN mkdir -p /tmp/chrome && \
     chmod 777 /tmp/chrome && \
     mkdir -p /tmp/chromedriver && \
@@ -73,9 +62,7 @@ RUN mkdir -p /tmp/chrome && \
     mkdir -p /dev/shm && \
     chmod 777 /dev/shm && \
     mkdir -p /tmp/.X11-unix && \
-    chmod 777 /tmp/.X11-unix && \
-    mkdir -p /tmp/.org.chromium.Chromium.XXXXXX && \
-    chmod 777 /tmp/.org.chromium.Chromium.XXXXXX
+    chmod 777 /tmp/.X11-unix
 
 # Chrome sandbox 권한 설정
 RUN chown -R root:root /opt/chrome && \
@@ -85,15 +72,18 @@ RUN chown -R root:root /opt/chrome && \
 # 바이너리 버전 확인 (설치 검증용)
 RUN /opt/chrome/chrome --version && /opt/chromedriver/chromedriver --version
 
-# Python deps는 Lambda 작업 디렉토리에 설치
+# 작업 디렉토리 설정
+WORKDIR /app
+
+# Python 의존성 설치
 COPY requirements.txt .
-RUN pip install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
+RUN pip install -r requirements.txt
 
 # 소스 코드 복사 (모든 모듈 포함)
-COPY app.py ${LAMBDA_TASK_ROOT}
-COPY webdriver/ ${LAMBDA_TASK_ROOT}/webdriver/
-COPY traderie/ ${LAMBDA_TASK_ROOT}/traderie/
-COPY db/ ${LAMBDA_TASK_ROOT}/db/
+COPY main.py .
+COPY webdriver/ ./webdriver/
+COPY traderie/ ./traderie/
+COPY db/ ./db/
 
-# Lambda 핸들러
-CMD ["app.handler"]
+# 컨테이너 실행 시 main.py 실행
+CMD ["python", "main.py"]

@@ -1,9 +1,11 @@
 import os
 from urllib.parse import quote
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
 
 class Crawler:
     def __init__(self, web_driver):
@@ -26,17 +28,21 @@ class Crawler:
         print(f"{item_name} 아이템 크롤링 완료")
 
         return trade_list
-    
+
     def _login(self, traderie_id, traderie_pwd):
         url = f"https://traderie.com/login"
         self.web_driver.get(url)
 
         # 페이지가 로딩 되기를 기다림
         username_input = WebDriverWait(self.web_driver, 30).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="username"]'))
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, 'input[name="username"]')
+            )
         )
         password_input = WebDriverWait(self.web_driver, 30).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="password"]'))
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, 'input[name="password"]')
+            )
         )
         print(f"로그인 페이지 로딩 완료")
 
@@ -46,15 +52,26 @@ class Crawler:
         password_input.send_keys(Keys.ENTER)
 
         # 로그인 되기를 대기
-        WebDriverWait(self.web_driver, 30).until(lambda driver: "login" not in driver.current_url)
+        WebDriverWait(self.web_driver, 30).until(
+            lambda driver: "login" not in driver.current_url
+        )
 
     def _get_traderie_item_id(self, item_name):
         encoded_item_name = quote(item_name)
-        url = f"https://traderie.com/diablo2resurrected/products?search={encoded_item_name}"
+        url = (
+            f"https://traderie.com/diablo2resurrected/products?search={encoded_item_name}"
+        )
         self.web_driver.get(url)
 
         item_a_tag = WebDriverWait(self.web_driver, 30).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "div.search-content div.fade div.row div[class*='col'] div.item div[class*='item'] div.item-container-img-icon a[class*='item-img']"))
+            EC.presence_of_element_located(
+                (
+                    By.CSS_SELECTOR,
+                    "div.search-content div.fade div.row div[class*='col'] "
+                    "div.item div[class*='item'] div.item-container-img-icon "
+                    "a[class*='item-img']",
+                )
+            )
         )
         print(f"{item_name} 검색 페이지 로딩 완료")
 
@@ -63,18 +80,25 @@ class Crawler:
         return href.split("/")[-1]
 
     def _crawl_trade_list(self, item_id):
-        url = f"https://traderie.com/diablo2resurrected/product/{item_id}/recent?prop_Mode=softcore&prop_Ladder=true"
+        url = (
+            f"https://traderie.com/diablo2resurrected/product/{item_id}/recent?"
+            "prop_Mode=softcore&prop_Ladder=true"
+        )
         self.web_driver.get(url)
 
         # listing-product-info 요소들이 로딩되기를 기다림 (20개 또는 최대 30초)
         def wait_for_listings_loaded(driver):
-            listings = driver.find_elements(By.CSS_SELECTOR, 'div.listing-product-info')
+            listings = driver.find_elements(
+                By.CSS_SELECTOR, "div.listing-product-info"
+            )
             return len(listings) >= 20
 
         WebDriverWait(self.web_driver, 30).until(wait_for_listings_loaded)
-        
+
         # 로딩된 거래 개수 확인
-        listings = self.web_driver.find_elements(By.CSS_SELECTOR, 'div.listing-product-info')
+        listings = self.web_driver.find_elements(
+            By.CSS_SELECTOR, "div.listing-product-info"
+        )
         print(f"{len(listings)}개의 거래 확인됨")
 
         # 각각 거래 목록에 대해 파싱
@@ -85,7 +109,7 @@ class Crawler:
                 trade_list.append(trade_info)
 
         return trade_list
-    
+
     def _refine_trade(self, listing):
         lines = listing.text.split("\n")
         if "day" in lines[-1]:
@@ -96,10 +120,14 @@ class Crawler:
         start_index = lines.index("Trading For")
         end_index = next(i for i, line in enumerate(lines) if "High Rune Value" in line)
         trading_for_lines = lines[start_index + 1:end_index]  # ['1 X Jah Rune', '  OR', '1 X Ber Rune']
-        if any("each" in trading_for_line for trading_for_line in trading_for_lines):
+        if any(
+            "each" in trading_for_line
+            for trading_for_line in trading_for_lines
+        ):
             return  # each 거래는 뭔가 가치 판단이 어려워서 제외
         if any(
-            ("Rune" not in trading_for_line) and (" OR" not in trading_for_line)
+            ("Rune" not in trading_for_line)
+            and (" OR" not in trading_for_line)
             for trading_for_line in trading_for_lines
         ):
             return  # "Rune"도 아니고 " OR"도 아닌 항목이라면, 아이템이 끼어 있는 것

@@ -1,8 +1,10 @@
-import webdriver
-import traderie
 import json
-import db
 import os
+
+import db
+import traderie
+import webdriver
+
 
 def main():
     print("===== 웹 드라이버 생성 시작 =====")
@@ -19,7 +21,9 @@ def main():
         items = db_instance.get_items()
         db_items = set(item["item_name"] for item in items)
 
-        not_in_db_items = [item for item in traderie_items if item not in db_items]
+        not_in_db_items = [
+            item for item in traderie_items if item not in db_items
+        ]
 
         if not_in_db_items:
             target_item_name = not_in_db_items[0]
@@ -40,6 +44,7 @@ def main():
         db_instance.put_item(target_item_name, trade_list)
         print("===== DB 데이터 삽입 완료 =====\n")
 
+
 if __name__ == "__main__":
-    print("\n") # 그냥 빈줄용
+    print("\n")  # 그냥 빈줄용
     main()

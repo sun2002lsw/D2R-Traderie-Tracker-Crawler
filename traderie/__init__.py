@@ -1,3 +1,3 @@
 from .crawler import Crawler
 
-__all__ = ['Crawler']
+__all__ = ["Crawler"]
