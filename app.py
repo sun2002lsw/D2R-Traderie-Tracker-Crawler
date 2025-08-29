@@ -15,8 +15,8 @@ def handler(event, context):
 
         print("===== DB 데이터 조회 시작 =====")
         db = DynamoDB()
-        item_infos = db.get_item_infos()
-        db_items = set(item["item_name"] for item in item_infos)
+        items = db.get_items()
+        db_items = set(item["item_name"] for item in items)
 
         with open("traderie/traderie_items.json", "r", encoding="utf-8") as f:
             traderie_items = set(json.load(f))
@@ -25,7 +25,7 @@ def handler(event, context):
         if not_in_db_items:
             target_item_name = not_in_db_items[0]
         else:
-            oldest_item_info = min(item_infos, key=lambda x: x["update_time"])
+            oldest_item_info = min(items, key=lambda x: x["update_time"])
             target_item_name = oldest_item_info["item_name"]
         print("===== DB 데이터 조회 완료 =====\n")
 
