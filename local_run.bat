@@ -8,4 +8,4 @@ if errorlevel 1 (
 )
 
 echo =================================================
-python app.py
+python main.py

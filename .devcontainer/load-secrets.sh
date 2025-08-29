@@ -44,25 +44,6 @@ if [ -f "${SECRETS_FILE}" ]; then
     # 환경변수 설정
     echo "환경변수 설정 중..."
     
-    # AWS 자격 증명 먼저 설정
-    export AWS_ACCESS_KEY_ID=$(jq -r '.AWS_ACCESS_KEY_ID' "${SECRETS_FILE}")
-    export AWS_SECRET_ACCESS_KEY=$(jq -r '.AWS_SECRET_ACCESS_KEY' "${SECRETS_FILE}")
-    
-    # AWS 자격 증명 값 확인
-    if [ -z "${AWS_ACCESS_KEY_ID}" ] || [ "${AWS_ACCESS_KEY_ID}" = "null" ]; then
-        echo "✗ AWS_ACCESS_KEY_ID가 설정되지 않았습니다!"
-        exit 1
-    fi
-    
-    if [ -z "${AWS_SECRET_ACCESS_KEY}" ] || [ "${AWS_SECRET_ACCESS_KEY}" = "null" ]; then
-        echo "✗ AWS_SECRET_ACCESS_KEY가 설정되지 않았습니다!"
-        exit 1
-    fi
-    
-    echo "AWS 자격 증명 설정 완료:"
-    echo "AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}"
-    echo "AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}"
-    
     # Traderie 자격 증명 설정
     export TRADERIE_ID=$(jq -r '.TRADERIE_ID' "${SECRETS_FILE}")
     export TRADERIE_PWD=$(jq -r '.TRADERIE_PWD' "${SECRETS_FILE}")
@@ -82,10 +63,8 @@ if [ -f "${SECRETS_FILE}" ]; then
     echo "TRADERIE_ID: ${TRADERIE_ID}"
     echo "TRADERIE_PWD: ${TRADERIE_PWD}"
     
-    # .bashrc에 추가 (AWS 자격 증명을 먼저)
+    # .bashrc에 추가
     echo ".bashrc에 환경변수 추가 중..."
-    echo "export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" >> ~/.bashrc
-    echo "export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" >> ~/.bashrc
     echo "export TRADERIE_ID=${TRADERIE_ID}" >> ~/.bashrc
     echo "export TRADERIE_PWD=${TRADERIE_PWD}" >> ~/.bashrc
     
