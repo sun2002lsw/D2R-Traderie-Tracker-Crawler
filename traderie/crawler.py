@@ -59,7 +59,8 @@ class Crawler:
     def _get_traderie_item_id(self, item_name):
         encoded_item_name = quote(item_name)
         url = (
-            f"https://traderie.com/diablo2resurrected/products?search={encoded_item_name}"
+            f"https://traderie.com/diablo2resurrected/products?"
+            f"search={encoded_item_name}"
         )
         self.web_driver.get(url)
 
@@ -81,8 +82,9 @@ class Crawler:
 
     def _crawl_trade_list(self, item_id):
         url = (
-            f"https://traderie.com/diablo2resurrected/product/{item_id}/recent?"
-            "prop_Mode=softcore&prop_Ladder=true"
+            f"https://traderie.com/diablo2resurrected/product/"
+            f"{item_id}/recent?"
+            f"prop_Mode=softcore&prop_Ladder=true"
         )
         self.web_driver.get(url)
 
@@ -115,20 +117,17 @@ class Crawler:
         if "day" in lines[-1]:
             return  # 24시간 이상 거래 제외
 
-        sell_amount = lines[0].split("X")[0].strip()  # "7 X Ist Rune" => 7
-
         start_index = lines.index("Trading For")
-        end_index = next(i for i, line in enumerate(lines) if "High Rune Value" in line)
-        trading_for_lines = lines[start_index + 1:end_index]  # ['1 X Jah Rune', '  OR', '1 X Ber Rune']
-        if any(
-            "each" in trading_for_line
-            for trading_for_line in trading_for_lines
-        ):
+        end_index = next(
+            i for i, line in enumerate(lines) if "High Rune Value" in line
+        )
+        trading_for_lines = lines[start_index + 1 : end_index]
+
+        if any("each" in line for line in trading_for_lines):
             return  # each 거래는 뭔가 가치 판단이 어려워서 제외
         if any(
-            ("Rune" not in trading_for_line)
-            and (" OR" not in trading_for_line)
-            for trading_for_line in trading_for_lines
+            ("Rune" not in line) and (" OR" not in line)
+            for line in trading_for_lines
         ):
             return  # "Rune"도 아니고 " OR"도 아닌 항목이라면, 아이템이 끼어 있는 것
 
@@ -145,6 +144,7 @@ class Crawler:
         if trading_for_items:
             trading_for_list.append(trading_for_items)
 
+        sell_amount = lines[0].split("X")[0].strip()  # "7 X Ist Rune" => 7
         print(f"{sell_amount}개의 물품을 판매: {trading_for_list}")
         return (sell_amount, trading_for_list)
 
