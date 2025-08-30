@@ -25,4 +25,4 @@ images:
   - 'asia-northeast3-docker.pkg.dev/traderiebot/d2r-traderie-tracker-crawler:$COMMIT_SHA'
 
 options:
-  logging: NONE # 로그는 저장하지 않음
+  logging: CLOUD_LOGGING_ONLY
