@@ -2,7 +2,7 @@ import json
 from abc import ABC, abstractmethod
 from datetime import datetime
 
-TABLE_NAME = "D2R-Traderie-Trades"
+TABLE_NAME = "d2r-traderie-trades"
 TIME_FORMAT = "%Y-%m-%d %H:%M"
 
 
