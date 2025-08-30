@@ -12,6 +12,7 @@ RUN apt-get update && \
         unzip \
         ca-certificates \
         wget \
+        curl \
         gnupg \
         fonts-liberation \
         libasound2 \
