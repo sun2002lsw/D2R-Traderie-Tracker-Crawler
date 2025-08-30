@@ -27,7 +27,7 @@ steps:
       'deploy',
       'd2r-traderie-tracker-crawler',  # Cloud Run 서비스 이름
       '--image', 'asia-northeast3-docker.pkg.dev/traderiebot/d2r-traderie-tracker-crawler/crawler:$COMMIT_SHA',
-      '--region', 'europe-west1', # Cloud Run 서비스 지역
+      '--region', 'asia-northeast3', # Cloud Run 서비스 지역 (이미지와 같은 지역으로 맞춰야 함)
       '--platform', 'managed'
     ]
 

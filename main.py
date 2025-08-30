@@ -1,6 +1,6 @@
-from flask import Flask, jsonify
-import app
+from flask import Flask
 
+import app
 
 # 단순히 cloud run 에서 실행하기 위해 8080 포트 listen
 flask_app = Flask(__name__)
