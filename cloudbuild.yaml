@@ -8,7 +8,7 @@ steps:
     args:
       - 'build'
       - '-t'
-      - 'asia-northeast3-docker.pkg.dev/traderiebot/d2r-traderie-tracker-crawler:$COMMIT_SHA' # Artifact Registry 경로
+      - 'asia-northeast3-docker.pkg.dev/traderiebot/d2r-traderie-tracker-crawler/crawler:$COMMIT_SHA' # Artifact Registry 경로
       - '.'
 
   # 2. 빌드된 Docker 이미지를 Artifact Registry에 푸시
@@ -17,12 +17,12 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'asia-northeast3-docker.pkg.dev/traderiebot/d2r-traderie-tracker-crawler:$COMMIT_SHA' # Artifact Registry 경로
+      - 'asia-northeast3-docker.pkg.dev/traderiebot/d2r-traderie-tracker-crawler/crawler:$COMMIT_SHA' # Artifact Registry 경로
 
 # 빌드된 이미지를 Cloud Build의 메타데이터에 등록합니다.
 # 이 부분은 선택 사항이지만, Cloud Build UI에서 빌드된 이미지를 쉽게 확인할 수 있게 해줍니다.
 images:
-  - 'asia-northeast3-docker.pkg.dev/traderiebot/d2r-traderie-tracker-crawler:$COMMIT_SHA'
+  - 'asia-northeast3-docker.pkg.dev/traderiebot/d2r-traderie-tracker-crawler/crawler:$COMMIT_SHA'
 
 options:
   logging: CLOUD_LOGGING_ONLY
