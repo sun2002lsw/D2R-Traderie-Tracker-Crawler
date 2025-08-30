@@ -20,13 +20,9 @@ steps:
       - -c
       - |
         set -euo pipefail
-        JOB_NAME="d2r-traderie-tracker-crawler"
-        REGION="asia-northeast3"
-        IMAGE="asia-northeast3-docker.pkg.dev/traderiebot/d2r-traderie-tracker-crawler/crawler:$COMMIT_SHA"
-
-        gcloud run jobs update "$JOB_NAME" \
-          --image "$IMAGE" \
-          --region "$REGION" \
+        gcloud run jobs update 'd2r-traderie-tracker-crawler' \
+          --image 'asia-northeast3-docker.pkg.dev/traderiebot/d2r-traderie-tracker-crawler/crawler:$COMMIT_SHA' \
+          --region 'asia-northeast3' \
           --platform managed
 
 # 빌드된 이미지를 Cloud Build의 메타데이터에 등록합니다.
