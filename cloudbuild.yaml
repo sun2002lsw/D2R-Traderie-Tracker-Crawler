@@ -1,35 +1,33 @@
 steps:
-  # 1. Docker 이미지 빌드
-  #    - name: 'gcr.io/cloud-builders/docker' 빌더를 사용하여 Docker 이미지를 빌드합니다.
-  #    - '-t' 플래그는 이미지 태그를 지정합니다. Artifact Registry 경로를 사용합니다.
-  #      형식: REGION-docker.pkg.dev/PROJECT_ID/REPOSITORY_NAME/IMAGE_NAME:TAG
-  #    - '.'은 Dockerfile이 현재 디렉토리에 있음을 의미합니다.
+  # 1) Docker 이미지 빌드
   - name: 'gcr.io/cloud-builders/docker'
     args:
-      - 'build'
-      - '-t'
-      - 'asia-northeast3-docker.pkg.dev/traderiebot/d2r-traderie-tracker-crawler/crawler:$COMMIT_SHA' # Artifact Registry 경로
-      - '.'
+      - build
+      - -t
+      - 'asia-northeast3-docker.pkg.dev/traderiebot/d2r-traderie-tracker-crawler/crawler:$COMMIT_SHA'
+      - .
 
-  # 2. 빌드된 Docker 이미지를 Artifact Registry에 푸시
-  #    - name: 'gcr.io/cloud-builders/docker' 빌더를 다시 사용합니다.
-  #    - 'push' 명령어를 사용하여 빌드된 이미지를 Artifact Registry로 보냅니다.
+  # 2) Artifact Registry로 푸시
   - name: 'gcr.io/cloud-builders/docker'
     args:
-      - 'push'
-      - 'asia-northeast3-docker.pkg.dev/traderiebot/d2r-traderie-tracker-crawler/crawler:$COMMIT_SHA' # Artifact Registry 경로
+      - push
+      - 'asia-northeast3-docker.pkg.dev/traderiebot/d2r-traderie-tracker-crawler/crawler:$COMMIT_SHA'
 
-  # 3. Cloud Run 서비스 배포 스텝
+  # 3) Cloud Run Job 업데이트
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args: [
-      'run',
-      'deploy',
-      'd2r-traderie-tracker-crawler',  # Cloud Run 서비스 이름
-      '--image', 'asia-northeast3-docker.pkg.dev/traderiebot/d2r-traderie-tracker-crawler/crawler:$COMMIT_SHA',
-      '--region', 'asia-northeast3', # Cloud Run 서비스 지역 (이미지와 같은 지역으로 맞춰야 함)
-      '--platform', 'managed'
-    ]
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        set -euo pipefail
+        JOB_NAME="d2r-traderie-tracker-crawler"
+        REGION="asia-northeast3"
+        IMAGE="asia-northeast3-docker.pkg.dev/traderiebot/d2r-traderie-tracker-crawler/crawler:$COMMIT_SHA"
+
+        gcloud run jobs update "$JOB_NAME" \
+          --image "$IMAGE" \
+          --region "$REGION" \
+          --platform managed
 
 # 빌드된 이미지를 Cloud Build의 메타데이터에 등록합니다.
 # 이 부분은 선택 사항이지만, Cloud Build UI에서 빌드된 이미지를 쉽게 확인할 수 있게 해줍니다.
