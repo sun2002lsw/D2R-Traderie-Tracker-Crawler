@@ -1,4 +1,3 @@
-import os
 from urllib.parse import quote
 
 from selenium.webdriver.common.by import By
@@ -6,14 +5,15 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+from .secret import get_traderie_credentials
+
 
 class Crawler:
     def __init__(self, web_driver):
         self.web_driver = web_driver
 
     def crawl_trade_list(self, item_name):
-        traderie_id = os.environ["TRADERIE_ID"]
-        traderie_pwd = os.environ["TRADERIE_PWD"]
+        traderie_id, traderie_pwd = get_traderie_credentials()
         print(f"TRADERIE_ID: {traderie_id}")
         print(f"TRADERIE_PWD: {traderie_pwd}")
 
