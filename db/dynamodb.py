@@ -1,13 +1,13 @@
 import boto3
 
-from .common import TABLE_NAME, BaseDatabase
+from .common import BaseDatabase
 
 
 class DynamoDB(BaseDatabase):
     def _connect(self):
         # 환경변수로 AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY가 자동 적용됨
         db = boto3.resource("dynamodb", region_name="ap-northeast-2")
-        self.table = db.Table(TABLE_NAME)
+        self.table = db.Table("d2r-traderie-trades")
         self._print_connection(self.__class__.__name__)
 
     def _scan_items(self) -> list:

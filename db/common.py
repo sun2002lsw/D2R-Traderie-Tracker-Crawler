@@ -2,13 +2,11 @@ import json
 from abc import ABC, abstractmethod
 from datetime import datetime
 
-TABLE_NAME = "d2r-traderie-trades"
 TIME_FORMAT = "%Y-%m-%d %H:%M"
 
 
 class BaseDatabase(ABC):
     def __init__(self):
-        self.table = None
         self._connect()
         print(f"{self.__class__.__name__} 연결")
 
