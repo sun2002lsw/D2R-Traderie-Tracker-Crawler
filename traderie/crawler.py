@@ -156,7 +156,12 @@ class Crawler:
 
     def _get_trading_item(self, trading_for_line):
         trade_info = trading_for_line.split("X")
-        item_cnt = int(trade_info[0].strip())
-        item_name = trade_info[1].strip()
+        first_elem = trade_info[0].strip()
+        if first_elem.isdigit():
+            item_cnt = int(first_elem)
+            item_name = trade_info[1].strip()
+        else:
+            item_cnt = 1
+            item_name = first_elem
 
         return (item_cnt, item_name)
