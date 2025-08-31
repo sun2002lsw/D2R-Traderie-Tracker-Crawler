@@ -7,9 +7,9 @@ def get_traderie_credentials():
     traderie_pwd = os.environ.get("TRADERIE_PWD")
     
     if not traderie_id or not traderie_pwd:
-        project_id = os.environ.get("GCP_PROJECT_ID")
+        project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
         if not project_id:
-            raise ValueError("GCP_PROJECT_ID 환경변수가 설정되지 않았습니다")
+            raise ValueError("GOOGLE_CLOUD_PROJECT 환경변수가 설정되지 않았습니다")
             
         if not traderie_id:
             traderie_id = _get_gcp_secret(project_id, "TRADERIE_ID")
