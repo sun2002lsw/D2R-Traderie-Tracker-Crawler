@@ -7,12 +7,6 @@ import webdriver
 
 
 def run():
-    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
-    if project_id:
-        print(f"Project ID: {project_id}")
-    else:
-        print("GOOGLE_CLOUD_PROJECT not found!")
-
     print("===== 웹 드라이버 생성 시작 =====")
     chrome_driver = webdriver.StealthDriver()
     driver = chrome_driver.get_driver()

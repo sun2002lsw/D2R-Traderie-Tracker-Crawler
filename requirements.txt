@@ -7,7 +7,6 @@ lxml
 boto3
 setuptools
 google-cloud-firestore
-google-cloud-secret-manager
 
 # Code quality and linting tools
 flake8
