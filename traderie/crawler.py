@@ -7,6 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+from db.common import BaseDatabase as DB
 from helper.log import log_print
 
 
@@ -14,7 +15,7 @@ class Crawler:
     def __init__(self, web_driver):
         self.web_driver = web_driver
 
-    def crawl_trade_list(self, item_names, db_instance):
+    def crawl_trade_list(self, item_names: list, db_instance: DB):
         traderie_id = os.environ.get("TRADERIE_ID")
         traderie_pwd = os.environ.get("TRADERIE_PWD")
         log_print(f"TRADERIE_ID: {traderie_id}")
@@ -32,7 +33,7 @@ class Crawler:
             log_print(f"{item_name} 아이템 크롤링 완료")
 
             if os.getenv("Develop") != "true":
-                db_instance.put_items(item_name, trade_list)
+                db_instance.put_item(item_name, trade_list)
                 log_print(f"{item_name} 아이템 크롤링 DB 삽입 완료")
 
             print()
