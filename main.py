@@ -2,6 +2,8 @@ import json
 import os
 from datetime import datetime, timedelta
 
+import selenium.common.exceptions
+
 import db
 import traderie
 import webdriver
@@ -38,9 +40,17 @@ def run():
     else:
         target_item_names = [item for item in traderie_items]
 
+    if len(target_item_names) == 0:
+        log_print("===== 크롤링할 아이템이 없습니다. =====")
+        return
+
     log_print("===== 크롤링 시작 =====")
     crawler = traderie.Crawler(driver)
-    crawler.crawl_trade_list(target_item_names, db_instance)
+    try:
+        crawler.crawl_trade_list(target_item_names, db_instance)
+    except selenium.common.exceptions.TimeoutException as e:
+        log_print(f"===== TimeoutException 발생 =====")
+        raise
     log_print("===== 크롤링 완료 =====\n")
 
 

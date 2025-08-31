@@ -10,12 +10,16 @@ from selenium.webdriver.support.ui import WebDriverWait
 from db.common import BaseDatabase as DB
 from helper.log import log_print
 
+PAGE_LOAD_TIMEOUT = 60
+
 
 class Crawler:
     def __init__(self, web_driver):
         self.web_driver = web_driver
 
     def crawl_trade_list(self, item_names: list, db_instance: DB):
+        self.web_driver.set_page_load_timeout(PAGE_LOAD_TIMEOUT)
+
         traderie_id = os.environ.get("TRADERIE_ID")
         traderie_pwd = os.environ.get("TRADERIE_PWD")
         log_print(f"TRADERIE_ID: {traderie_id}")

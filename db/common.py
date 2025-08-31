@@ -26,8 +26,6 @@ class BaseDatabase(ABC):
 
     def get_items(self) -> list:
         items = self._get_items_impl()
-
-        log_print("아이템 정보 조회 완료")
         for item in items:
             log_print(f"{item['item_name']} - {item['update_time']}")
 
@@ -44,6 +42,3 @@ class BaseDatabase(ABC):
         }
 
         self._put_item_impl(item_data)
-
-        log_print(f"{item_name} 아이템 업데이트 완료 - {current_time}")
-        log_print(f"{trade_list_json}")
