@@ -15,7 +15,7 @@ class ChromeDriver(BaseDriver):
 
         options.binary_location = chrome_path
         self.driver = webdriver.Chrome(options=options, executable_path=driver_path)
-        self.driver.set_page_load_timeout(10)
+        self.driver.set_page_load_timeout(30)
 
     def _createChromeOptions(self):
         options = Options()

@@ -18,7 +18,7 @@ class StealthDriver(BaseDriver):
             browser_executable_path=chrome_path,
             headless=True,
         )
-        self.driver.set_page_load_timeout(10)
+        self.driver.set_page_load_timeout(30)
 
     def _createChromeOptions(self):
         return uc.ChromeOptions()
