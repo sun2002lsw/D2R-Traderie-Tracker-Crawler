@@ -48,9 +48,8 @@ def run():
     crawler = traderie.Crawler(driver)
     try:
         crawler.crawl_trade_list(target_item_names, db_instance)
-    except selenium.common.exceptions.TimeoutException as e:
-        log_print(f"===== TimeoutException 발생 =====")
-        raise
+    except selenium.common.exceptions.TimeoutException:
+        raise RuntimeError("===== TimeoutException 발생 =====")
     log_print("===== 크롤링 완료 =====\n")
 
 

@@ -98,12 +98,13 @@ class Crawler:
         )
         self.web_driver.get(url)
 
-        # listing-product-info 요소들이 로딩되기를 기다림 (20개 또는 최대 30초)
+        # listing-product-info 요소들이 로딩되기를 기다림 (20개 또는 최대 10초)
         def wait_for_listings_loaded(driver):
             listings = driver.find_elements(By.CSS_SELECTOR, "div.listing-product-info")
             return len(listings) >= 20
 
         WebDriverWait(self.web_driver, 10).until(wait_for_listings_loaded)
+        time.sleep(5)  # 페이지 동적 로딩 시간 대기
 
         # 로딩된 거래 개수 확인
         listings = self.web_driver.find_elements(
