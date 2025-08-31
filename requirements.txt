@@ -7,7 +7,6 @@ lxml
 boto3
 setuptools
 google-cloud-firestore
-flask
 
 # Code quality and linting tools
 flake8

@@ -82,7 +82,6 @@ RUN pip install -r requirements.txt
 
 # 소스 코드 복사 (모든 모듈 포함)
 COPY main.py .
-COPY app.py .
 COPY webdriver/ ./webdriver/
 COPY traderie/ ./traderie/
 COPY db/ ./db/
