@@ -35,6 +35,7 @@ class Crawler:
                 db_instance.put_items(item_name, trade_list)
                 log_print(f"{item_name} 아이템 크롤링 DB 삽입 완료")
 
+            print()
             time.sleep(5)
 
     def _login(self, traderie_id, traderie_pwd):

@@ -14,6 +14,7 @@ def run():
     driver = chrome_driver.get_driver()
     log_print("===== 웹 드라이버 생성 완료 =====\n")
 
+    db_instance = None
     with open("traderie/traderie_items.json", "r", encoding="utf-8") as f:
         traderie_items = set(json.load(f))
 
@@ -39,13 +40,8 @@ def run():
 
     log_print("===== 크롤링 시작 =====")
     crawler = traderie.Crawler(driver)
-    item_trade_list = crawler.crawl_trade_list(target_item_names)
+    crawler.crawl_trade_list(target_item_names, db_instance)
     log_print("===== 크롤링 완료 =====\n")
-
-    if os.getenv("Develop") != "true":
-        log_print("===== DB 데이터 삽입 시작 =====")
-        db_instance.put_items(item_trade_list)
-        log_print("===== DB 데이터 삽입 완료 =====\n")
 
 
 if __name__ == "__main__":
