@@ -85,6 +85,7 @@ COPY main.py .
 COPY webdriver/ ./webdriver/
 COPY traderie/ ./traderie/
 COPY db/ ./db/
+COPY helper/ ./helper/
 
 # 컨테이너 실행 시 main.py 실행
 CMD ["python", "main.py"]
