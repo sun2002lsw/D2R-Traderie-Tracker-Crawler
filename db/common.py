@@ -4,8 +4,7 @@ from datetime import datetime
 
 from helper.log import log_print
 
-
-TIME_FORMAT = "%Y-%m-%d %H:%M"
+TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 
 class BaseDatabase(ABC):

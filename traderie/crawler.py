@@ -1,4 +1,5 @@
 import os
+import time
 from urllib.parse import quote
 
 from selenium.webdriver.common.by import By
@@ -13,33 +14,38 @@ class Crawler:
     def __init__(self, web_driver):
         self.web_driver = web_driver
 
-    def crawl_trade_list(self, item_name):
+    def crawl_trade_list(self, item_names, db_instance):
         traderie_id = os.environ.get("TRADERIE_ID")
         traderie_pwd = os.environ.get("TRADERIE_PWD")
         log_print(f"TRADERIE_ID: {traderie_id}")
-        log_print(f"TRADERIE_PWD: {traderie_pwd}")
+        log_print(f"TRADERIE_PWD: {traderie_pwd}\n")
 
         log_print(f"로그인 시작")
         self._login(traderie_id, traderie_pwd)
         log_print(f"로그인 완료\n")
 
-        log_print(f"{item_name} 아이템 크롤링 시작")
-        item_id = self._get_traderie_item_id(item_name)
-        log_print(f"{item_name} => {item_id}")
-        trade_list = self._crawl_trade_list(item_id)
-        log_print(f"{item_name} 아이템 크롤링 완료")
+        for item_name in item_names:
+            log_print(f"{item_name} 아이템 크롤링 시작")
+            item_id = self._get_traderie_item_id(item_name)
+            log_print(f"{item_name} => {item_id}")
+            trade_list = self._crawl_trade_list(item_id)
+            log_print(f"{item_name} 아이템 크롤링 완료")
 
-        return trade_list
+            if os.getenv("Develop") != "true":
+                db_instance.put_items(item_name, trade_list)
+                log_print(f"{item_name} 아이템 크롤링 DB 삽입 완료")
+
+            time.sleep(5)
 
     def _login(self, traderie_id, traderie_pwd):
         url = f"https://traderie.com/login"
         self.web_driver.get(url)
 
         # 페이지가 로딩 되기를 기다림
-        username_input = WebDriverWait(self.web_driver, 30).until(
+        username_input = WebDriverWait(self.web_driver, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="username"]'))
         )
-        password_input = WebDriverWait(self.web_driver, 30).until(
+        password_input = WebDriverWait(self.web_driver, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="password"]'))
         )
         log_print(f"로그인 페이지 로딩 완료")
@@ -50,7 +56,7 @@ class Crawler:
         password_input.send_keys(Keys.ENTER)
 
         # 로그인 되기를 대기
-        WebDriverWait(self.web_driver, 30).until(
+        WebDriverWait(self.web_driver, 10).until(
             lambda driver: "login" not in driver.current_url
         )
 
@@ -62,7 +68,7 @@ class Crawler:
         )
         self.web_driver.get(url)
 
-        item_a_tag = WebDriverWait(self.web_driver, 30).until(
+        item_a_tag = WebDriverWait(self.web_driver, 10).until(
             EC.presence_of_element_located(
                 (
                     By.CSS_SELECTOR,
@@ -91,7 +97,7 @@ class Crawler:
             listings = driver.find_elements(By.CSS_SELECTOR, "div.listing-product-info")
             return len(listings) >= 20
 
-        WebDriverWait(self.web_driver, 30).until(wait_for_listings_loaded)
+        WebDriverWait(self.web_driver, 10).until(wait_for_listings_loaded)
 
         # 로딩된 거래 개수 확인
         listings = self.web_driver.find_elements(

@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime, timedelta
 
 import db
 import traderie
@@ -20,26 +21,30 @@ def run():
         log_print("===== DB 데이터 조회 시작 =====")
         db_instance = db.CloudFirestore()
         items = db_instance.get_items()
-        db_items = set(item["item_name"] for item in items)
 
-        not_in_db_items = [item for item in traderie_items if item not in db_items]
-        if not_in_db_items:
-            target_item_name = not_in_db_items[0]
-        else:
-            oldest_item_info = min(items, key=lambda x: x["update_time"])
-            target_item_name = oldest_item_info["item_name"]
+        # DB에 없는 아이템들의 이름 추출
+        db_items = set(item["item_name"] for item in items)
+        target_item_names = [item for item in traderie_items if item not in db_items]
+
+        # 3시간이 지난 아이템들의 이름 추출
+        three_hours_ago = datetime.now() - timedelta(hours=3)
+        for item in items:
+            update_time = datetime.strptime(item["update_time"], db.TIME_FORMAT)
+            if update_time < three_hours_ago:
+                target_item_names.append(item["item_name"])
+
         log_print("===== DB 데이터 조회 완료 =====\n")
     else:
-        target_item_name = next(iter(traderie_items))
+        target_item_names = [item for item in traderie_items]
 
     log_print("===== 크롤링 시작 =====")
     crawler = traderie.Crawler(driver)
-    trade_list = crawler.crawl_trade_list(target_item_name)
+    item_trade_list = crawler.crawl_trade_list(target_item_names)
     log_print("===== 크롤링 완료 =====\n")
 
     if os.getenv("Develop") != "true":
         log_print("===== DB 데이터 삽입 시작 =====")
-        db_instance.put_item(target_item_name, trade_list)
+        db_instance.put_items(item_trade_list)
         log_print("===== DB 데이터 삽입 완료 =====\n")
 
 
