@@ -2,13 +2,16 @@ import json
 from abc import ABC, abstractmethod
 from datetime import datetime
 
+from helper.log import log_print
+
+
 TIME_FORMAT = "%Y-%m-%d %H:%M"
 
 
 class BaseDatabase(ABC):
     def __init__(self):
         self._connect()
-        print(f"{self.__class__.__name__} 연결")
+        log_print(f"{self.__class__.__name__} 연결")
 
     @abstractmethod
     def _connect(self):
@@ -25,9 +28,9 @@ class BaseDatabase(ABC):
     def get_items(self) -> list:
         items = self._get_items_impl()
 
-        print("아이템 정보 조회 완료")
+        log_print("아이템 정보 조회 완료")
         for item in items:
-            print(f"{item['item_name']} - {item['update_time']}")
+            log_print(f"{item['item_name']} - {item['update_time']}")
 
         return items
 
@@ -43,5 +46,5 @@ class BaseDatabase(ABC):
 
         self._put_item_impl(item_data)
 
-        print(f"{item_name} 아이템 업데이트 완료 - {current_time}")
-        print(f"{trade_list_json}")
+        log_print(f"{item_name} 아이템 업데이트 완료 - {current_time}")
+        log_print(f"{trade_list_json}")

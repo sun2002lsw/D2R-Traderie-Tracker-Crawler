@@ -6,6 +6,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+from helper.log import log_print
+
 
 class Crawler:
     def __init__(self, web_driver):
@@ -14,18 +16,18 @@ class Crawler:
     def crawl_trade_list(self, item_name):
         traderie_id = os.environ.get("TRADERIE_ID")
         traderie_pwd = os.environ.get("TRADERIE_PWD")
-        print(f"TRADERIE_ID: {traderie_id}")
-        print(f"TRADERIE_PWD: {traderie_pwd}")
+        log_print(f"TRADERIE_ID: {traderie_id}")
+        log_print(f"TRADERIE_PWD: {traderie_pwd}")
 
-        print(f"로그인 시작")
+        log_print(f"로그인 시작")
         self._login(traderie_id, traderie_pwd)
-        print(f"로그인 완료\n")
+        log_print(f"로그인 완료\n")
 
-        print(f"{item_name} 아이템 크롤링 시작")
+        log_print(f"{item_name} 아이템 크롤링 시작")
         item_id = self._get_traderie_item_id(item_name)
-        print(f"{item_name} => {item_id}")
+        log_print(f"{item_name} => {item_id}")
         trade_list = self._crawl_trade_list(item_id)
-        print(f"{item_name} 아이템 크롤링 완료")
+        log_print(f"{item_name} 아이템 크롤링 완료")
 
         return trade_list
 
@@ -40,7 +42,7 @@ class Crawler:
         password_input = WebDriverWait(self.web_driver, 30).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="password"]'))
         )
-        print(f"로그인 페이지 로딩 완료")
+        log_print(f"로그인 페이지 로딩 완료")
 
         # 로그인
         username_input.send_keys(traderie_id)
@@ -70,7 +72,7 @@ class Crawler:
                 )
             )
         )
-        print(f"{item_name} 검색 페이지 로딩 완료")
+        log_print(f"{item_name} 검색 페이지 로딩 완료")
 
         # href 속성 꺼내오기
         href = item_a_tag.get_attribute("href")
@@ -95,7 +97,7 @@ class Crawler:
         listings = self.web_driver.find_elements(
             By.CSS_SELECTOR, "div.listing-product-info"
         )
-        print(f"{len(listings)}개의 거래 확인됨")
+        log_print(f"{len(listings)}개의 거래 확인됨")
 
         # 각각 거래 목록에 대해 파싱
         trade_list = list()
@@ -136,7 +138,7 @@ class Crawler:
             trading_for_list.append(trading_for_items)
 
         sell_amount = lines[0].split("X")[0].strip()  # "7 X Ist Rune" => 7
-        print(f"{sell_amount}개의 물품을 판매: {trading_for_list}")
+        log_print(f"{sell_amount}개의 물품을 판매: {trading_for_list}")
         return (sell_amount, trading_for_list)
 
     def _get_trading_item(self, trading_for_line):
