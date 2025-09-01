@@ -150,7 +150,8 @@ class Crawler:
         if trading_for_items:
             trading_for_list.append(trading_for_items)
 
-        sell_amount = lines[0].split("X")[0].strip()  # "7 X Ist Rune" => 7
+        sell_amount_str = lines[0].split("X")[0].strip()  # "7 X Ist Rune" => "7"
+        sell_amount = int(sell_amount_str)
         log_print(f"{sell_amount}개의 물품을 판매: {trading_for_list}")
         return (sell_amount, trading_for_list)
 
