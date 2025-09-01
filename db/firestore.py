@@ -10,21 +10,24 @@ class CloudFirestore(BaseDatabase):
         self.collection = client.collection("recent-trades")
 
     def _get_items_impl(self) -> list:
-        docs = self.collection.select(["item_name", "update_time"]).stream()
+        docs = self.collection.select(["update_time"]).stream()
 
         items = []
         for doc in docs:
             doc_data = doc.to_dict()
-            if doc_data:
-                items.append(
-                    {
-                        "item_name": doc_data.get("item_name", ""),
-                        "update_time": doc_data.get("update_time", ""),
-                    }
-                )
+            item = {
+                "item_name": doc.id,
+                "update_time": doc_data["update_time"],
+            }
+
+            items.append(item)
 
         return items
 
     def _put_item_impl(self, item_data: dict):
+        item_data_without_name = {
+            k: v for k, v in item_data.items() if k != "item_name"
+        }
+
         doc_ref = self.collection.document(item_data["item_name"])
-        doc_ref.set(item_data)
+        doc_ref.set(item_data_without_name)
