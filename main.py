@@ -50,6 +50,9 @@ def run():
         crawler.crawl_trade_list(target_item_names, db_instance)
     except selenium.common.exceptions.TimeoutException:
         raise RuntimeError("===== TimeoutException 발생 =====")
+    except Exception as e:
+        raise RuntimeError(f"===== 알수 없는 Exception 발생: {e} =====")
+
     log_print("===== 크롤링 완료 =====\n")
 
 
