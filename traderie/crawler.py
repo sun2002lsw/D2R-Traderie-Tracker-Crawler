@@ -126,10 +126,18 @@ class Crawler:
         if "day" in lines[-1]:
             return  # 24시간 이상 거래 제외
 
-        start_index = lines.index("Trading For")
-        end_index = next(i for i, line in enumerate(lines) if "High Rune Value" in line)
-        trading_for_lines = lines[start_index + 1 : end_index]
+        try:
+            start_index = lines.index("Trading For")
+        except ValueError:
+            return  # Free 같은 이상한 거래는 저 문구가 없음
+        try:
+            end_index = next(
+                i for i, line in enumerate(lines) if "High Rune Value" in line
+            )
+        except StopIteration:
+            return  # 저 문구가 없는 경우는 찾지 못 했지만, 방어 코드로 작성
 
+        trading_for_lines = lines[start_index + 1 : end_index]
         if any("each" in line for line in trading_for_lines):
             return  # each 거래는 뭔가 가치 판단이 어려워서 제외
         if any(
